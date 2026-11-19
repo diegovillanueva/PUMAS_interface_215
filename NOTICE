@@ -4,8 +4,10 @@ Corporation for Atmospheric Research (UCAR). The unmodified CESM2 code is
 distributed under the CESM2 copyright notice and terms of use:
 https://www.cesm.ucar.edu/models/cesm2/copyright
 
-PUMAS (https://github.com/ESCOMP/PUMAS) is not redistributed here; it is used
-unmodified at the commit pinned in versions.env and keeps its own terms.
+PUMAS (https://github.com/ESCOMP/PUMAS) is not redistributed here, except for
+the unchanged context lines of the diffs in patches_pumas/. PUMAS is used at
+the commit pinned in versions.env and keeps its own terms; no licence is
+claimed over it.
 
 The BSD 3-Clause License in LICENSE applies to the changes made in this
-repository (patch content, scripts, namelists and documentation).
+repository (the added and modified lines of the patches, scripts, namelists and documentation).

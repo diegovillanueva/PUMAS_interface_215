@@ -1,7 +1,7 @@
 {
   "title": "PUMAS_interface_215: patches to run PUMAS cloud microphysics in CESM 2.1.5 CAM6",
-  "description": "Patches that let the CAM6 atmosphere of CESM 2.1.5 (CAM tag cam_cesm2_1_rel_60) run the current PUMAS cloud microphysics (ESCOMP/PUMAS) as micro_mg_version = 3, with PUMAS itself unmodified. The repository includes minimal namelists and a script that checks the pinned commits and applies the patches.",
-  "version": "1.0.0",
+  "description": "Patches that let the CAM6 atmosphere of CESM 2.1.5 (CAM tag cam_cesm2_1_rel_60) run the current PUMAS cloud microphysics (ESCOMP/PUMAS) as micro_mg_version = 3, with PUMAS itself unmodified, and an optional PUMAS patch set with microphysics process controls whose defaults reproduce upstream PUMAS. The repository includes minimal namelists and a script that checks the pinned commits and applies the patches.",
+  "version": "1.1.0",
   "upload_type": "software",
   "license": "BSD-3-Clause",
   "access_right": "open",
@@ -20,19 +20,34 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/diegovillanueva/pumas_limiter_update",
-      "relation": "isRequiredBy",
-      "scheme": "url"
-    },
-    {
-      "identifier": "https://github.com/diegovillanueva/mg2_limiter_update",
-      "relation": "isSupplementTo",
+      "identifier": "https://github.com/diegovillanueva/PUMAS_interface_215/tree/v1.0.1",
+      "relation": "isIdenticalTo",
       "scheme": "url"
     },
     {
       "identifier": "https://github.com/ESCOMP/PUMAS",
       "relation": "references",
       "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.24365669",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.24365675",
+      "relation": "references",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.24365685",
+      "relation": "references",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.24365774",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
     }
   ]
 }

@@ -3,7 +3,8 @@
 # Usage: scripts/apply_interface.sh <PUMAS_DIR> <CAM_DIR> [<CASE_DIR>]
 #   PUMAS_DIR  clone of ESCOMP/PUMAS checked out at PUMAS_COMMIT (versions.env)
 #   CAM_DIR    <CESM_ROOT>/components/cam at cam_cesm2_1_rel_60
-#   CASE_DIR   optional: copy the nine PUMAS source files into <CASE_DIR>/SourceMods/src.cam
+#   CASE_DIR   optional: copy the nine PUMAS source files (ten with patches_pumas/ applied)
+#              into <CASE_DIR>/SourceMods/src.cam
 set -euo pipefail
 
 usage="usage: apply_interface.sh <PUMAS_DIR> <CAM_DIR> [<CASE_DIR>]"
@@ -37,7 +38,8 @@ if [[ -n "${case_dir}" ]]; then
     dest="${case_dir}/SourceMods/src.cam"
     [[ -d "${dest}" ]] || { echo "ERROR: ${dest} not found" >&2; exit 1; }
     for f in pumas_kinds pumas_gamma_function micro_pumas_utils micro_pumas_diags \
-             pumas_stochastic_collect_tau module_neural_net tau_neural_net_quantile ML_fixer_check micro_pumas_v1; do
+             pumas_stochastic_collect_tau module_neural_net tau_neural_net_quantile ML_fixer_check micro_pumas_v1 micro_pumas_sppe; do
+        [[ "${f}" == micro_pumas_sppe && ! -f "${pumas}/${f}.F90" ]] && continue
         cp "${pumas}/${f}.F90" "${dest}/"
         echo "${dest}/${f}.F90"
     done
