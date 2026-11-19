@@ -125,6 +125,7 @@ The pins are in `versions.env`.
 
 ## Changes
 
+- 1.1.2: citation metadata (DOI).
 - 1.1.1: `micro_mg_cam.F90.patch` now passes the ice nucleation input to PUMAS
   as a tendency. CAM `cam_cesm2_1_rel_60` (`nucleate_ice_cam`) provides `naai`
   as a number concentration [1/kg], whereas PUMAS expects a nucleation tendency

@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata from this file."
 title: "PUMAS_interface_215: patches to run PUMAS cloud microphysics in CESM 2.1.5 CAM6"
-version: 1.1.1
+version: 1.1.2
 date-released: 2026-11-19
 doi: "10.5281/zenodo.24378002"
 license: BSD-3-Clause
