@@ -1,0 +1,95 @@
+diff --git a/src/physics/cam/check_energy.F90 b/src/physics/cam/check_energy.F90
+--- a/src/physics/cam/check_energy.F90
++++ b/src/physics/cam/check_energy.F90
+@@ -233,6 +233,7 @@
+     integer  i,k                                   ! column, level indices
+     integer :: ixcldice, ixcldliq                  ! CLDICE and CLDLIQ indices
+     integer :: ixrain, ixsnow                      ! RAINQM and SNOWQM indices
++    integer :: ixgrau                              ! GRAUQM index (oPUMAS cesm215 interface)
+ !-----------------------------------------------------------------------
+ 
+     lchnk = state%lchnk
+@@ -241,6 +242,7 @@
+     call cnst_get_ind('CLDLIQ', ixcldliq, abort=.false.)
+     call cnst_get_ind('RAINQM', ixrain,   abort=.false.)
+     call cnst_get_ind('SNOWQM', ixsnow,   abort=.false.)
++    call cnst_get_ind('GRAUQM', ixgrau,   abort=.false.)
+ 
+     ! cpairv_loc needs to be allocated to a size which matches state and ptend
+     ! If psetcols == pcols, cpairv is the correct size and just copy into cpairv_loc
+@@ -289,6 +291,7 @@
+           do i = 1, ncol
+              wl(i) = wl(i) + state%q(i,k,ixrain)*state%pdel(i,k)/gravit
+              wi(i) = wi(i) + state%q(i,k,ixsnow)*state%pdel(i,k)/gravit
++             if (ixgrau > 1) wi(i) = wi(i) + state%q(i,k,ixgrau)*state%pdel(i,k)/gravit
+           end do
+        end do
+     end if
+@@ -372,6 +375,7 @@
+     integer  i,k                                   ! column, level indices
+     integer :: ixcldice, ixcldliq                  ! CLDICE and CLDLIQ indices
+     integer :: ixrain, ixsnow                      ! RAINQM and SNOWQM indices
++    integer :: ixgrau                              ! GRAUQM index (oPUMAS cesm215 interface)
+ !-----------------------------------------------------------------------
+ 
+     lchnk = state%lchnk
+@@ -380,6 +384,7 @@
+     call cnst_get_ind('CLDLIQ', ixcldliq, abort=.false.)
+     call cnst_get_ind('RAINQM', ixrain,   abort=.false.)
+     call cnst_get_ind('SNOWQM', ixsnow,   abort=.false.)
++    call cnst_get_ind('GRAUQM', ixgrau,   abort=.false.)
+ 
+     ! cpairv_loc needs to be allocated to a size which matches state and ptend
+     ! If psetcols == pcols, cpairv is the correct size and just copy into cpairv_loc
+@@ -428,6 +433,7 @@
+           do i = 1, ncol
+              wl(i) = wl(i) + state%q(i,k,ixrain)*state%pdel(i,k)/gravit
+              wi(i) = wi(i) + state%q(i,k,ixsnow)*state%pdel(i,k)/gravit
++             if (ixgrau > 1) wi(i) = wi(i) + state%q(i,k,ixgrau)*state%pdel(i,k)/gravit
+           end do
+        end do
+     end if
+@@ -626,6 +632,7 @@
+     integer  i,k,m                                 ! column, level,constituent indices
+     integer :: ixcldice, ixcldliq                  ! CLDICE and CLDLIQ indices
+     integer :: ixrain, ixsnow                      ! RAINQM and SNOWQM indices
++    integer :: ixgrau                              ! GRAUQM index (oPUMAS cesm215 interface)
+ 
+ !-----------------------------------------------------------------------
+ 
+@@ -634,11 +641,12 @@
+     call cnst_get_ind('CLDLIQ', ixcldliq, abort=.false.)
+     call cnst_get_ind('RAINQM', ixrain,   abort=.false.)
+     call cnst_get_ind('SNOWQM', ixsnow,   abort=.false.)
++    call cnst_get_ind('GRAUQM', ixgrau,   abort=.false.)
+ 
+     do m = 1,pcnst
+ 
+        if ( any(m == (/ 1, ixcldliq, ixcldice, &
+-                           ixrain,   ixsnow    /)) ) exit   ! dont process water substances
++                           ixrain,   ixsnow, ixgrau /)) ) exit   ! dont process water substances
+                                                             ! they are checked in check_energy
+        if (cnst_get_type_byind(m).eq.'dry') then
+           trpdel(:ncol,:) = state%pdeldry(:ncol,:)
+@@ -709,6 +717,7 @@
+     integer  i,k                                   ! column, level indices
+     integer :: ixcldice, ixcldliq                  ! CLDICE and CLDLIQ indices
+     integer :: ixrain, ixsnow                      ! RAINQM and SNOWQM indices
++    integer :: ixgrau                              ! GRAUQM index (oPUMAS cesm215 interface)
+     integer :: m                            ! tracer index
+     character(len=8) :: tracname   ! tracername
+ !-----------------------------------------------------------------------
+@@ -720,11 +729,12 @@
+     call cnst_get_ind('CLDLIQ', ixcldliq, abort=.false.)
+     call cnst_get_ind('RAINQM', ixrain,   abort=.false.)
+     call cnst_get_ind('SNOWQM', ixsnow,   abort=.false.)
++    call cnst_get_ind('GRAUQM', ixgrau,   abort=.false.)
+ 
+     do m = 1,pcnst
+ 
+        if ( any(m == (/ 1, ixcldliq, ixcldice, &
+-                           ixrain,   ixsnow    /)) ) exit   ! dont process water substances
++                           ixrain,   ixsnow, ixgrau /)) ) exit   ! dont process water substances
+                                                             ! they are checked in check_energy
+ 
+        tracname = cnst_name(m)

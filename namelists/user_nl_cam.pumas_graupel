@@ -1,0 +1,4 @@
+! Select PUMAS microphysics (micro_mg_version = 3) with prognostic graupel (10 constituents).
+ micro_mg_version = 3
+ micro_mg_sub_version = 0
+ micro_mg_do_graupel = .true.

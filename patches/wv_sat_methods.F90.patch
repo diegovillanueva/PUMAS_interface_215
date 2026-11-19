@@ -1,0 +1,49 @@
+diff --git a/src/physics/cam/wv_sat_methods.F90 b/src/physics/cam/wv_sat_methods.F90
+--- a/src/physics/cam/wv_sat_methods.F90
++++ b/src/physics/cam/wv_sat_methods.F90
+@@ -72,6 +72,10 @@
+ public wv_sat_qsat_ice
+ public wv_sat_qsat_trans
+ 
++! oPUMAS cesm215 interface: vector wrappers needed by micro_pumas_v1
++public wv_sat_qsat_water_vect
++public wv_sat_qsat_ice_vect
++
+ contains
+ 
+ !---------------------------------------------------------------------
+@@ -481,4 +485,34 @@
+ 
+ end function Bolton_svp_water
+ 
++!---------------------------------------------------------------------
++! oPUMAS cesm215 interface: vector wrappers around the elemental
++! routines above, with the argument list of the newer CAM versions
++! (t, p, es, qs, vlen, idx) that micro_pumas_v1 calls.
++!---------------------------------------------------------------------
++
++subroutine wv_sat_qsat_water_vect(t, p, es, qs, vlen, idx)
++  integer,  intent(in)  :: vlen
++  real(r8), intent(in)  :: t(vlen)    ! Temperature
++  real(r8), intent(in)  :: p(vlen)    ! Pressure
++  real(r8), intent(out) :: es(vlen)   ! Saturation vapor pressure
++  real(r8), intent(out) :: qs(vlen)   ! Saturation specific humidity
++  integer,  intent(in), optional :: idx ! Scheme index
++
++  call wv_sat_qsat_water(t, p, es, qs, idx)
++
++end subroutine wv_sat_qsat_water_vect
++
++subroutine wv_sat_qsat_ice_vect(t, p, es, qs, vlen, idx)
++  integer,  intent(in)  :: vlen
++  real(r8), intent(in)  :: t(vlen)    ! Temperature
++  real(r8), intent(in)  :: p(vlen)    ! Pressure
++  real(r8), intent(out) :: es(vlen)   ! Saturation vapor pressure
++  real(r8), intent(out) :: qs(vlen)   ! Saturation specific humidity
++  integer,  intent(in), optional :: idx ! Scheme index
++
++  call wv_sat_qsat_ice(t, p, es, qs, idx)
++
++end subroutine wv_sat_qsat_ice_vect
++
+ end module wv_sat_methods

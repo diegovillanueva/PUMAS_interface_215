@@ -1,0 +1,3 @@
+! Select PUMAS microphysics (micro_mg_version = 3) in CESM 2.1.5 with PUMAS_interface_215.
+ micro_mg_version = 3
+ micro_mg_sub_version = 0
