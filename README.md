@@ -99,7 +99,7 @@ simulations.
 - CESM `release-cesm2.1.5` (`7a6c5b0d4e045085633dd9553cdd6aa8a8ea728d`), CAM `cam_cesm2_1_rel_60` (`a03b84b7c4e34f965b115686f22a043b85739e56`).
 - PUMAS `https://github.com/ESCOMP/PUMAS.git`, branch `main_cam`, commit `e7377aeeff15acf28c8edf42e9c50b6e89f7de11` (merge of PR #78, 2 September 2026).
 
-The pins are in `versions.env`. Release v1.0.0.
+The pins are in `versions.env`.
 
 ## Licence and citation
 
@@ -108,14 +108,13 @@ namelists and documentation); see `LICENSE`. The patches modify CESM2/CAM6
 source code, copyright UCAR, which remains under the CESM2 terms of use, and
 PUMAS is not redistributed and keeps its own terms; see `NOTICE`.
 
-Please cite this software via the Zenodo DOI of the release; the citation
-metadata are in `CITATION.cff`.
+Please cite this software, [doi:10.5281/zenodo.24365680](https://doi.org/10.5281/zenodo.24365680); the citation metadata are in `CITATION.cff`.
 
 Related repositories:
 
-- [mg2_limiter_update](https://github.com/diegovillanueva/mg2_limiter_update): droplet freezing limiter and microphysics switches for MG2 (CESM 2.1.5 default), with the run configurations.
-- [cam6_cosp_calipso_diag](https://github.com/diegovillanueva/cam6_cosp_calipso_diag): COSP, CALIPSO/CloudSat and cloud-top diagnostics, including the fix of the swapped `CLD_CAL_TMPLIQ`/`CLD_CAL_TMPICE` fields.
-- [pumas_limiter_update](https://github.com/diegovillanueva/pumas_limiter_update): the droplet freezing limiter for PUMAS, applied on top of PUMAS_interface_215.
+- [mg2_limiter_update](https://github.com/diegovillanueva/mg2_limiter_update) ([doi:10.5281/zenodo.24365669](https://doi.org/10.5281/zenodo.24365669)): droplet freezing limiter and microphysics switches for MG2 (CESM 2.1.5 default), with the run configurations.
+- [cam6_cosp_calipso_diag](https://github.com/diegovillanueva/cam6_cosp_calipso_diag) ([doi:10.5281/zenodo.24365675](https://doi.org/10.5281/zenodo.24365675)): COSP, CALIPSO/CloudSat and cloud-top diagnostics, including the fix of the swapped `CLD_CAL_TMPLIQ`/`CLD_CAL_TMPICE` fields.
+- [pumas_limiter_update](https://github.com/diegovillanueva/pumas_limiter_update) ([doi:10.5281/zenodo.24365685](https://doi.org/10.5281/zenodo.24365685)): the droplet freezing limiter for PUMAS, applied on top of PUMAS_interface_215.
 
 ## Contact
 
