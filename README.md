@@ -123,6 +123,18 @@ pinned PUMAS commit.
 
 The pins are in `versions.env`.
 
+## Changes
+
+- 1.1.1: `micro_mg_cam.F90.patch` now passes the ice nucleation input to PUMAS
+  as a tendency. CAM `cam_cesm2_1_rel_60` (`nucleate_ice_cam`) provides `naai`
+  as a number concentration [1/kg], whereas PUMAS expects a nucleation tendency
+  [1/kg/s] and no longer subtracts the existing ice. For `micro_mg_version = 3`
+  the interface now passes `max(naai - ni/max(mincld, icldm), 0)/dtime`, as MG2
+  does internally. MG1 and MG2 are unchanged. Simulations with earlier
+  versions overestimate ice nucleation in PUMAS.
+- 1.1.0: optional PUMAS patch set, Zenodo metadata.
+- 1.0.1, 1.0.0: initial release.
+
 ## Licence and citation
 
 BSD 3-Clause for the content of this repository (patch content, scripts,

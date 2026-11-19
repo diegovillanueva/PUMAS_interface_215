@@ -377,7 +377,15 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
     real(r8) :: packed_relvar(mgncol,nlev)
     real(r8) :: packed_accre_enhan(mgncol,nlev)
-@@ -1317,6 +1545,8 @@
+@@ -1287,6 +1515,7 @@
+    real(r8), allocatable :: packed_qsatfac(:,:)
+ 
+    real(r8) :: packed_naai(mgncol,nlev)
++   real(r8) :: naai_tend(state%psetcols,pver) ! naai as tendency [1/kg/s] for PUMAS
+    real(r8) :: packed_npccn(mgncol,nlev)
+ 
+    real(r8), allocatable :: packed_rndst(:,:,:)
+@@ -1317,6 +1546,8 @@
     real(r8), target :: packed_qstend(mgncol,nlev)
     real(r8), target :: packed_nrtend(mgncol,nlev)
     real(r8), target :: packed_nstend(mgncol,nlev)
@@ -386,7 +394,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
     real(r8), target :: packed_prect(mgncol)
     real(r8), target :: packed_preci(mgncol)
-@@ -1331,6 +1561,7 @@
+@@ -1331,6 +1562,7 @@
     real(r8), target :: packed_iflx(mgncol,nlev+1)
     real(r8), target :: packed_rflx(mgncol,nlev+1)
     real(r8), target :: packed_sflx(mgncol,nlev+1)
@@ -394,7 +402,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
     real(r8), target :: packed_qrout(mgncol,nlev)
     real(r8), target :: packed_qcsevap(mgncol,nlev)
     real(r8), target :: packed_qisevap(mgncol,nlev)
-@@ -1379,6 +1610,8 @@
+@@ -1379,6 +1611,8 @@
     real(r8), target :: packed_qsout2(mgncol,nlev)
     real(r8), target :: packed_nrout2(mgncol,nlev)
     real(r8), target :: packed_nsout2(mgncol,nlev)
@@ -403,7 +411,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
     real(r8), target :: packed_freqs(mgncol,nlev)
     real(r8), target :: packed_freqr(mgncol,nlev)
     real(r8), target :: packed_nfice(mgncol,nlev)
-@@ -1403,6 +1636,12 @@
+@@ -1403,6 +1637,12 @@
     real(r8) :: reff_rain_dum(mgncol,nlev)
     real(r8) :: reff_snow_dum(mgncol,nlev)
  
@@ -416,7 +424,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
     ! Heterogeneous-only version of mnuccdo.
     real(r8) :: mnuccdohet(state%psetcols,pver)
  
-@@ -1878,6 +2117,10 @@
+@@ -1878,6 +2118,10 @@
        lq(ixnumrain) = .true.
        lq(ixnumsnow) = .true.
     end if
@@ -427,7 +435,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
     ! the name 'cldwat' triggers special tests on cldliq
     ! and cldice in physics_update
-@@ -1905,6 +2148,13 @@
+@@ -1905,6 +2149,13 @@
        call post_proc%add_field(p(cflx), p(packed_cflx))
        call post_proc%add_field(p(iflx), p(packed_iflx))
     end if
@@ -441,7 +449,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
     call post_proc%add_field(p(am_evp_st), p(packed_am_evp_st))
  
-@@ -2004,6 +2254,11 @@
+@@ -2004,6 +2255,11 @@
  
     packed_p = packer%pack(state_loc%pmid)
     packed_pdel = packer%pack(state_loc%pdel)
@@ -453,7 +461,30 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
     packed_cldn = packer%pack(ast)
     packed_liqcldf = packer%pack(alst_mic)
-@@ -2050,6 +2305,13 @@
+@@ -2014,7 +2270,21 @@
+    else
+       packed_qsatfac = 1._r8
+    endif
+-   packed_naai = packer%pack(naai)
++   if (micro_mg_version == 3) then
++      ! PUMAS (since 2021) reads naai as a nucleation tendency [1/kg/s] and no longer
++      ! subtracts existing ice; rel_60 nucleate_ice_cam delivers a number [1/kg].
++      ! Convert as MG2 did: (naai - ni/icldm)/dt, so that nnuccd*dt = naai*icldm - ni.
++      naai_tend = 0._r8
++      do k = top_lev, pver
++         do i = 1, ncol
++            naai_tend(i,k) = max(naai(i,k) - state_loc%q(i,k,ixnumice) / &
++                 max(mincld, aist_mic(i,k)), 0._r8) / dtime
++         end do
++      end do
++      packed_naai = packer%pack(naai_tend)
++   else
++      packed_naai = packer%pack(naai)
++   end if
+    packed_npccn = packer%pack(npccn)
+ 
+    allocate(packed_rndst(mgncol,nlev,size(rndst, 3)))
+@@ -2050,6 +2320,13 @@
           packed_qs = packer%pack(state_loc%q(:,:,ixsnow))
           packed_ns = packer%pack(state_loc%q(:,:,ixnumsnow))
        end if
@@ -467,7 +498,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
        select case (micro_mg_version)
        case (1)
-@@ -2142,6 +2404,95 @@
+@@ -2142,6 +2419,95 @@
                   packed_prer_evap,                                     &
                   packed_frzimm,  packed_frzcnt,  packed_frzdep   )
           end select
@@ -563,7 +594,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
        end select
  
        call handle_errmsg(errstring, subname="micro_mg_tend")
-@@ -2175,6 +2526,11 @@
+@@ -2175,6 +2541,11 @@
           ptend_loc%q(:,:,ixnumsnow) = packer%unpack(packed_nstend, &
                -state_loc%q(:,:,ixnumsnow)/(dtime/num_steps))
        end if
@@ -575,7 +606,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
        ! Sum into overall ptend
        call physics_ptend_sum(ptend_loc, ptend, ncol)
-@@ -2187,6 +2543,8 @@
+@@ -2187,6 +2558,8 @@
  
     end do
  
@@ -584,7 +615,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
     ! Divide ptend by substeps.
     call physics_ptend_scale(ptend, 1._r8/num_steps, ncol)
  
-@@ -2231,6 +2589,11 @@
+@@ -2231,6 +2604,11 @@
        mgflxprc(:ncol,top_lev:pverp) = mgflxprc(:ncol,top_lev:pverp)+ iflx(:ncol,top_lev:pverp) + cflx(:ncol,top_lev:pverp)
        mgflxsnw(:ncol,top_lev:pverp) = mgflxsnw(:ncol,top_lev:pverp) + iflx(:ncol,top_lev:pverp)
     end if
@@ -596,7 +627,7 @@ diff --git a/src/physics/cam/micro_mg_cam.F90 b/src/physics/cam/micro_mg_cam.F90
  
  
     mgmrprc(:ncol,top_lev:pver) = qrout(:ncol,top_lev:pver) + qsout(:ncol,top_lev:pver)
-@@ -2903,6 +3266,10 @@
+@@ -2903,6 +3281,10 @@
     call outfld('AQSNOW',      qsout2,      psetcols, lchnk, avg_subcol_field=use_subcol_microp)
     call outfld('ANRAIN',      nrout2,      psetcols, lchnk, avg_subcol_field=use_subcol_microp)
     call outfld('ANSNOW',      nsout2,      psetcols, lchnk, avg_subcol_field=use_subcol_microp)
